@@ -1,0 +1,17 @@
+site_name: My Blog
+# site_url: https://athameral.github.io
+
+theme:
+  name: material
+  # locale: zh_CN
+
+markdown_extensions:
+  - toc:
+      permalink: "#"
+
+nav:
+  - 主页: index.md
+  - 专业课:
+    - 大数据与数据工程: subjects/BDDE/index.md
+  - 技巧:
+    - SSH: techniques/SSH/index.md
