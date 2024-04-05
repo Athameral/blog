@@ -362,6 +362,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#ssh-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      配置SSH Server
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#ssh-client" class="md-nav__link">
     <span class="md-ellipsis">
       配置SSH Client
@@ -435,10 +444,53 @@
 <p>你也可以通过执行<code>winget install marha.VcXsrv</code>来安装。</p>
 </blockquote>
 <p>在开始菜单中运行<code>XLaunch</code>，一路下一步即可。你可以点击<code>托盘图标/Applications/xcalc</code>来启动自带的计算器应用，并验证显示和点击等操作。</p>
+<h2 id="ssh-server">配置SSH Server<a class="headerlink" href="#ssh-server" title="Permanent link">#</a></h2>
+<p>确保你的<code>/etc/ssh/sshd_config</code>文件中有下面的内容：</p>
+<pre><code>X11Forwarding yes
+X11DisplayOffset 10
+X11UseLocalhost no
+</code></pre>
+<blockquote>
+<p>如果你明白上面的设置是什么意思，你大可以自行修改ㄟ( ▔, ▔ )ㄏ</p>
+</blockquote>
 <h2 id="ssh-client">配置SSH Client<a class="headerlink" href="#ssh-client" title="Permanent link">#</a></h2>
+<p>仅就X11 Forwarding而言，几种配置过程从易到难排序，分别是<code>Putty</code>、<code>OpenSSH for Windows</code>和<code>Visual Studio Code - Remote SSH</code>。</p>
+<p>无论哪种配置方式，你都需要先配置一个环境变量<code>DISPLAY</code>。我推荐你直接设置一个永久变量：</p>
+<pre><code>setx DISPLAY "127.0.0.1:0.0"
+</code></pre>
 <h3 id="putty">PuTTY<a class="headerlink" href="#putty" title="Permanent link">#</a></h3>
+<p>用PuTTY配置X11 Forwarding最简单。在<code>/Connection/SSH/X11</code>设置中选择<code>Enable X11 forwarding</code>即可。</p>
 <h3 id="openssh-for-windows">OpenSSH for Windows<a class="headerlink" href="#openssh-for-windows" title="Permanent link">#</a></h3>
+<p>可以通过<code>winget</code>安装<code>OpenSSH</code>：</p>
+<pre><code>winget install Microsoft.OpenSSH.Beta
+</code></pre>
+<p>运行<code>ssh -V</code>测试安装是否正常，应该能得到类似下面的输出：</p>
+<pre><code>OpenSSH_for_Windows_9.5p1, LibreSSL 3.8.2
+</code></pre>
+<p>你可以通过命令直接连接：</p>
+<pre><code>ssh -X -Y [username@]&lt;yourhost&gt;
+</code></pre>
+<blockquote>
+<p>有些平台<code>-X</code>可以省略，有些不可以。</p>
+</blockquote>
+<p>也可以配置用户目录下<code>.ssh/config</code>文件：</p>
+<pre><code>Host AnyNameYouLike
+HostName IP_or_Domain_Name
+User username
+**ForwardX11 yes**
+**ForwardX11Trusted yes**
+</code></pre>
+<blockquote>
+<p>有些平台<code>ForwardX11</code>可以省略，有些不可以。</p>
+</blockquote>
 <h3 id="visual-studio-code-remote-ssh">Visual Studio Code - Remote SSH<a class="headerlink" href="#visual-studio-code-remote-ssh" title="Permanent link">#</a></h3>
+<p>先安装<code>Remote Development</code>扩展包，再安装<code>Remote X11 (SSH)</code>扩展（也可能不需要）。</p>
+<blockquote>
+<p><code>Remote - SSH</code>扩展<em>可能</em>不会自动帮你设置远程主机上的<code>DISPLAY</code>环境变量，因此你<em>可能</em>需要这个扩展。</p>
+</blockquote>
+<p>勾选<code>Remote.SSH: Enable X11 Forwarding</code>，然后按你以往在VS Code上SSH的习惯继续即可。</p>
+<p>在远程主机上执行<code>xcalc</code>，如果一切顺利，你的桌面应该会弹出一个类似这样的窗口：</p>
+<p><img alt="运行在远程主机的GUI应用" src="../img/x11forwardgui.png" /></p>
 
 
 
