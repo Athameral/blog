@@ -16,7 +16,7 @@
     
     
       
-        <title>安全地访问内网：基于SSH Tunnel的Port Forwarding - My Blog</title>
+        <title>利用MIUI / Hyper OS自带备份提取应用数据 - My Blog</title>
       
     
     
@@ -58,7 +58,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#ssh-tunnelport-forwarding" class="md-skip">
+        <a href="#miui-hyper-os" class="md-skip">
           Skip to content
         </a>
       
@@ -94,7 +94,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              安全地访问内网：基于SSH Tunnel的Port Forwarding
+              利用MIUI / Hyper OS自带备份提取应用数据
             
           </span>
         </div>
@@ -305,7 +305,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../" class="md-nav__link">
+      <a href="../../SSH/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -326,7 +326,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../Android/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -367,6 +367,32 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#miui-backup" class="md-nav__link">
+    <span class="md-ellipsis">
+      备份数据（MIUI Backup）
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#android-backup-extractor" class="md-nav__link">
+    <span class="md-ellipsis">
+      提取数据（Android Backup Extractor）
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -380,7 +406,22 @@
                   
 
 
-<h1 id="ssh-tunnelport-forwarding">安全地访问内网：基于SSH Tunnel的Port Forwarding<a class="headerlink" href="#ssh-tunnelport-forwarding" title="Permanent link">#</a></h1>
+<h1 id="miui-hyper-os">利用MIUI / Hyper OS自带备份提取应用数据<a class="headerlink" href="#miui-hyper-os" title="Permanent link">#</a></h1>
+<blockquote>
+<p>之前一直在用M*******t Authenticator管理<a href="https://en.wikipedia.org/wiki/Time-based_one-time_password">TOTP</a>数据（2FA的一种实现），但它太重，启动太慢，而且本地化做得很烂，于是我就想换一个TOTP应用。辗转搜索到<a href="https://github.com/beemdevelopment/Aegis">Aegis</a>，基于GPL-3.0开源，UI设计得也很不错，而且支持多种导入导出的方式。</p>
+<p>问题来了，Aegis的确支持导入，但是M*******t Authenticator不支持导出啊（微软能不能414）！Aegis支持root方式导入，但我手机没有root啊！那我总不能把所有的2FA全重新申请一遍吧？</p>
+<p>一番搜索，最终决定从MIUI自带的备份入手，尝试提取数据。总结总结经验，也就有了这篇笔记。</p>
+</blockquote>
+<h2 id="miui-backup">备份数据（MIUI Backup）<a class="headerlink" href="#miui-backup" title="Permanent link">#</a></h2>
+<p>我们知道，<code>adb backup</code>只能备份那种允许你备份（即在<code>AndroidManifest.xml</code>中设置了<code>allowBackup=true</code>）的应用。但很多国产设备魔改了备份，可以无视这个限制调用相关API。</p>
+<p><a href="https://github.com/nelenkov/android-backup-extractor">Android Backup Extractor</a>是一个能够解包<code>adb backup</code>导出的备份的项目。</p>
+<p>备份文件位于/sdcard/MIUI/backup内。我们最后只需要这一个<code>.bak</code>文件，它包含APK和数据。</p>
+<h2 id="android-backup-extractor">提取数据（Android Backup Extractor）<a class="headerlink" href="#android-backup-extractor" title="Permanent link">#</a></h2>
+<p>用WinHex或者随便什么Hex编辑器打开这个<code>.bak</code>文件，不难发现其在<code>Android Backup</code>的基础上添加了一个Magic Header。</p>
+<p><img alt="miui_backup_msauth_header" src="../miui_backup_msauth_header.png" /></p>
+<p>不妨假设<code>.bak</code>文件只添加了Magic Header，那可以试试删除掉之后喂给<code>Android Backup Extractor</code>。</p>
+<p><img alt="miui_backup_extracted" src="../miui_backup_extracted.png" /></p>
+<p>果然是可行的。找到我们需要的文件，再导入到Aegis中就可以了。</p>
 
 
 
