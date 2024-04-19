@@ -62,8 +62,8 @@
     Host AnyNameYouLike
     HostName IP_or_Domain_Name
     User username
-    **ForwardX11 yes**
-    **ForwardX11Trusted yes**
+    ForwardX11 yes
+    ForwardX11Trusted yes
 
 > 有些平台`ForwardX11`可以省略，有些不可以。
 
